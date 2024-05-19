@@ -1,0 +1,14 @@
+--pregled containera
+docker ps -a
+
+--stvaranje postgres containera
+docker run --name diplomski -e POSTGRES_PASSWORD=lozinka -p 5555:5432 -d postgres
+
+--stop sve containere
+docker stop $(docker ps -a -q)
+
+-- brisanje svih containera
+docker rm $(docker ps -a -q)
+
+--connectanje na sql container
+docker exec -it b2f88960d24cbb6fdbf03d02ca3c41e0ea570ae6ed172c8bd0fc5f938498a0b0 psql -U postgres diplomski

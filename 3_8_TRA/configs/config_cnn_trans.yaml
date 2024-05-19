@@ -1,0 +1,66 @@
+qlib_init:
+  provider_uri: "~/.qlib/qlib_data/cn_data"
+  region: cn
+
+data_loader_config: &data_loader_config
+  class: StaticDataLoader
+  module_path: qlib.data.dataset.loader
+  kwargs:
+    config:
+      feature: /home/liyuante/TRA/dataset/HS/all_stock_fea2.pkl
+      label: /home/liyuante/TRA/dataset/HS/all_stock_lab2.pkl
+
+model_config: &model_config
+  input_size: 6  # 输入特征的维度
+  cnn_out_channels: 32  # CNN层的输出通道数
+  kernel_size: 16  # CNN核大小
+  hidden_size: 128  # Transformer的隐藏层大小
+  num_layers: 4  # Transformer层的数量
+  num_heads: 4  # Transformer中的注意力头数量
+  mlp_hidden_size: 128  # MLP隐藏层大小
+  use_attn: True
+  dropout: 0.3  # Dropout率
+
+num_states: &num_states 1
+
+tra_config: &tra_config
+  num_states: *num_states
+  hidden_size: 16
+  tau: 1.0
+  src_info: LR_TPE
+
+task:
+  model:
+    class: TRAModel
+    module_path: /home/liyuante/TRA/src/model.py
+    kwargs:
+      lr: 0.0002
+      n_epochs: 500
+      max_steps_per_epoch: 100
+      early_stop: 10
+      seed: 1000
+      logdir: /home/liyuante/TRA/result/HS/CNNTrans
+      model_type: CNNTrans
+      model_config: *model_config
+      tra_config: *tra_config
+      lamb: 1.0
+      rho: 0.99
+      freeze_model: False
+      model_init_state: 
+  dataset:
+    class: MTSDatasetH
+    module_path: /home/liyuante/TRA/src/dataset.py
+    kwargs:
+      handler:
+        class: DataHandler
+        module_path: qlib.data.dataset.handler
+        kwargs:
+          data_loader: *data_loader_config
+      segments:
+        train: [2018-01-02, 2021-12-31]
+        valid: [2022-01-01, 2022-12-31]
+        test: [2023-01-01, 2023-12-31]
+      seq_len: 60
+      horizon: 1
+      num_states: *num_states
+      batch_size: 64
