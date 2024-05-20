@@ -324,8 +324,6 @@ class GCGRU(tf.keras.Model):
         x_gcn = tf.stack(x_gcn, axis=1)
         return x_gcn
 
-    """ 允许每个时间步使用不同的图结构矩阵进行处理 """
-
     def Multi_GCN_1(self, inputs, inputs_matrx):
         P = inputs.shape[1]
         x_gcn = []
