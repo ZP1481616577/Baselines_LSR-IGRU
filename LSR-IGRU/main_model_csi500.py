@@ -1226,7 +1226,7 @@ def fun_last(root_data_path, T, train_his, epoches_list, P, number_of_models, mo
 T = 3
 P = 15
 train_his = P
-data_choose = 'ZZ500_gnn3'
+data_choose = 'CSI500'
 root_data_path = data_choose + '_T_' + str(T) + '_his_' + str(train_his) + '_P_' + str(P)
 print('root_data_path为:', root_data_path)
 model_data_path = data_choose + '_T_' + str(T) + '_his_' + str(train_his) + '_P_' + str(P)
